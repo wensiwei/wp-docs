@@ -40,8 +40,22 @@ jobs:
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
-      - name: Build with mdBook
-        run: mdbook build
+      - name: Build Chinese version
+        run: cd docs && mdbook build
+      - name: Build English version
+        run: cd en && mdbook build
+      - name: Copy theme assets
+        run: |
+          mkdir -p book/zh/theme
+          mkdir -p book/en/theme
+          cp theme/lang-switch.css book/zh/theme/
+          cp theme/lang-switch.js book/zh/theme/
+          cp theme/lang-switch.css book/en/theme/
+          cp theme/lang-switch.js book/en/theme/
+      - name: Copy language selection page
+        run: |
+          mkdir -p book
+          cp index.html book/
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
