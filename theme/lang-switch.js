@@ -1,35 +1,35 @@
 // Language Switcher Script
 (function() {
-    // Detect base path (e.g., '/wp-docs/' or '/' for root)
-    const basePath = (() => {
-        const path = window.location.pathname;
-        // Check if we're in a language subdirectory
-        const match = path.match(/^(\/[^/]+)?\/(zh|en)\//);
-        return match && match[1] ? match[1] : '';
-    })();
-
-    // Get current language from path
     const path = window.location.pathname;
+
+    // Parse path: /basepath/lang/page.html
+    // Example: /wp-docs/en/index.html -> basePath=/wp-docs, lang=en, page=/index.html
+    let basePath = '';
     let currentLang = 'en';
-    let currentPage = '/';
+    let currentPage = '/index.html';
 
-    // Remove base path for language detection
-    const pathWithoutBase = basePath ? path.replace(new RegExp('^' + basePath), '') : path;
+    // Remove trailing slash for consistent matching
+    const cleanPath = path.endsWith('/') ? path.slice(0, -1) : path;
 
-    if (pathWithoutBase.match(/^\/zh\//)) {
-        currentLang = 'zh';
-        currentPage = pathWithoutBase.replace(/^\/zh\//, '/');
-    } else if (pathWithoutBase.match(/^\/en\//)) {
-        currentLang = 'en';
-        currentPage = pathWithoutBase.replace(/^\/en\//, '/');
-    } else {
-        currentPage = pathWithoutBase === '/' || pathWithoutBase === '' ? '/index.html' : pathWithoutBase;
+    // Find where /zh/ or /en/ starts
+    const zhIndex = cleanPath.indexOf('/zh/');
+    const enIndex = cleanPath.indexOf('/en/');
+
+    if (zhIndex !== -1 || enIndex !== -1) {
+        const langIndex = zhIndex !== -1 ? zhIndex : enIndex;
+        basePath = cleanPath.substring(0, langIndex);  // '/wp-docs' or ''
+        currentLang = zhIndex !== -1 ? 'zh' : 'en';
+        currentPage = cleanPath.substring(langIndex + 3);  // After '/zh' or '/en'
+        if (!currentPage) {
+            currentPage = '/index.html';
+        }
     }
 
-    // Build language switcher HTML
+    // Build URLs
     const zhUrl = basePath + '/zh' + currentPage;
     const enUrl = basePath + '/en' + currentPage;
 
+    // Create switcher HTML
     const switcherHtml = `
         <div class="lang-switcher">
             ${currentLang === 'zh'

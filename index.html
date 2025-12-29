@@ -106,20 +106,6 @@
         // Set href for language links
         document.getElementById('zh-link').href = basePath + '/zh/';
         document.getElementById('en-link').href = basePath + '/en/';
-
-        // Auto-redirect based on browser language
-        (function() {
-            const lang = navigator.language || navigator.userLanguage;
-            const delay = 1500;
-
-            setTimeout(function() {
-                if (lang.startsWith('zh')) {
-                    window.location.href = basePath + '/zh/';
-                } else {
-                    window.location.href = basePath + '/en/';
-                }
-            }, delay);
-        })();
     </script>
 </body>
 </html>
