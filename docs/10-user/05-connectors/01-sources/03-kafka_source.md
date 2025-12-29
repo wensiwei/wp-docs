@@ -134,7 +134,6 @@ config = [
 enable = true
 key = "kafka_access_logs"
 connect = "kafka_src"
-tags = ["env:production", "type:access_log"]
 
 [[sources.params]]
 topic = ["nginx_access_log"]
@@ -147,7 +146,6 @@ topic = ["nginx_access_log"]
 enable = true
 key = "kafka_advanced"
 connect = "kafka_src"
-tags = ["env:production", "type:advanced"]
 
 [[sources.params]]
 topic = ["access_log"]
@@ -175,19 +173,6 @@ config = [
 ]
 ```
 
-### 开发环境配置
-```toml
-# wpsrc.toml
-[[sources]]
-enable = true
-key = "kafka_dev_logs"
-connect = "kafka_src"
-tags = ["env:development", "team:backend"]
-
-[[sources.params]]
-brokers = "dev-kafka:9092"
-topic = ["dev_events"]
-```
 
 ## 数据处理特性
 
@@ -195,9 +180,6 @@ topic = ["dev_events"]
 每个 Kafka 消息被转换为数据包，包含：
 - **消息体**: 消息的实际内容（payload）
 
-### 2. 自动标签添加
-系统会自动添加以下标签：
-- `access_source`: 消息来源主题名称
 
 示例：
 ```json

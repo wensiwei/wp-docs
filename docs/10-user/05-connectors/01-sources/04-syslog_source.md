@@ -61,7 +61,6 @@ addr = "10.0.0.100"  # 特定接口
 
 ```toml
 [[sources.params]]
-port = 1514          # 自定义端口
 port = 514           # 标准 syslog 端口 (需要 root 权限)
 ```
 
@@ -70,7 +69,6 @@ port = 514           # 标准 syslog 端口 (需要 root 权限)
 
 ```toml
 [[sources.params]]
-protocol = "udp"     # UDP 协议 (低延迟)
 protocol = "tcp"     # TCP 协议 (可靠传输)
 ```
 
@@ -92,7 +90,6 @@ header_mode = "keep"    # 保留头部，原样透传
 ```toml
 [[sources.params]]
 fast_strip = true   # 启用快速剥离（性能更好）
-fast_strip = false  # 默认值
 ```
 
 ### TCP 专用参数

@@ -29,7 +29,8 @@ WPL 管道函数分为两类：
 
 | 函数名 | 参数 | 说明 |
 |--------|------|------|
-| `chars_unescape` | 1 | 对所有字段进行反转义 |
+| `json_unescape` | 0 | 对chars类型字段进行反转义 |
+| `base64_decode` | 0 | 对chars类型字段进行base64解码 |
 
 ---
 
@@ -210,23 +211,15 @@ rule check_ipv6 {
 
 ## 直接函数详解
 
-### `chars_unescape`
+### `json_unescape`
 
 对所有字段进行反转义处理。
 
 **语法：**
 ```
-chars_unescape(<type>)
+json_unescape()
 ```
 
-**参数：**
-- `type`：反转义类型
-
-**支持的类型：**
-
-| 类型 | 说明 |
-|------|------|
-| `json` | JSON 转义字符反转义 |
 
 **转换效果（json）：**
 ```
@@ -241,7 +234,7 @@ rule parse_json_log {
   (
     json(
       chars@message
-    ) |chars_unescape(json)
+    ) |json_unescape()
   )
 }
 ```

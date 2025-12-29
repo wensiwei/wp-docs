@@ -56,18 +56,6 @@ instances = 4   # 1-32，默认为 1
 encode = "text"
 ```
 
-#### base64 编码
-```toml
-[[sources.params]]
-encode = "base64"
-```
-
-#### hex 编码
-```toml
-[[sources.params]]
-encode = "hex"
-```
-
 ## 配置示例
 
 ### 基础文件读取
@@ -99,7 +87,6 @@ file = "access.log"
 enable = true
 key = "nginx_error"
 connect = "file_src"
-tags = ["service:nginx", "type:error"]
 
 [[sources.params]]
 base = "/var/log/nginx"
@@ -129,19 +116,6 @@ file = "encoded.hex"
 encode = "hex"
 ```
 
-### 多实例并行读取（大文件优化）
-```toml
-# wpsrc.toml
-[[sources]]
-enable = true
-key = "large_file"
-connect = "file_src"
-
-[[sources.params]]
-path = "/data/large/access.log"
-instances = 4   # 文件将被分割为 4 个范围并行读取
-```
-> 配置后实际创建的源 key 为：`large_file-1`、`large_file-2`、`large_file-3`、`large_file-4`（或更少，取决于文件行数）。
 
 ## 数据处理特性
 
@@ -150,12 +124,7 @@ instances = 4   # 文件将被分割为 4 个范围并行读取
 
 ### 2. 编码处理
 - **text**: 直接读取文本内容
-- **base64**: 读取后进行 Base64 解码
-- **hex**: 读取后进行十六进制解码
 
-### 3. 自动标签
-系统会自动为每条数据添加以下标签：
-- `access_source`: 文件的完整路径
 
 示例：
 ```json

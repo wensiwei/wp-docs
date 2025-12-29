@@ -8,9 +8,6 @@
   - `line`：按换行符分帧；行末的 CR/空格/Tab 会被去除
   - `len`：长度前缀（RFC 6587 octet-counting）：`<len><SP><payload>`
   - `auto`（默认）：自动选择；默认优先 `len`，当 `prefer_newline=true` 时优先按行
-- 连接生命周期：服务端监听、并发连接处理、外部停止信号优雅关闭
-- 事件标签：自动注入 `access_ip`；可叠加用户自定义标签
-- 运行模式：在 batch（批处理）模式下会被忽略，不会启动监听；请在 daemon 模式使用 TCP 源
 
 ## 连接器定义（source.d）
 
@@ -45,7 +42,6 @@ framing = "auto"
 instances = 2
 ```
 
-> `instances` 为可选项；当设置为大于 1 时，单监听端口会以 round-robin 方式为多个 Source 实例分配连接，以提升 Parser 并行能力。
 
 ## 分帧模式详解
 

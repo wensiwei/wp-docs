@@ -67,13 +67,11 @@ topic = "events"
 | `connect` | String | 是 | 引用的连接器 ID |
 | `tags` | Array | 否 | 源的标签列表 |
 | `params` | Table | 否 | 连接器参数（可覆盖连接器默认值） |
-| `params_override` | Table | 否 | 参数覆盖的别名（与 params 等价） |
 
 ### 参数覆盖规则
 
 - 只有在连接器的 `allow_override` 列表中的参数才能被覆盖
 - 未在列表中的参数使用连接器定义中的默认值
-- `params` 和 `params_override` 是等价的别名
 
 ## 配置示例
 
