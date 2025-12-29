@@ -4,7 +4,7 @@
 
 ## 概述
 
-Syslog Sink 将数据以 RFC3164 文本格式发送到 Syslog 服务器，支持 UDP 与 TCP。消息格式固定：`<PRI>TIMESTAMP HOSTNAME TAG: MESSAGE`，其中 `TAG` 固定为 `wpgen`。
+Syslog Sink 将数据以 RFC3164 文本格式发送到 Syslog 服务器，支持 UDP 与 TCP。消息格式：`<PRI>TIMESTAMP HOSTNAME APP_NAME: MESSAGE`。
 
 ## 连接器定义
 
@@ -14,7 +14,7 @@ Syslog Sink 将数据以 RFC3164 文本格式发送到 Syslog 服务器，支持
 [[connectors]]
 id = "syslog_udp_sink"
 type = "syslog"
-allow_override = ["addr", "port", "protocol"]
+allow_override = ["addr", "port", "protocol", "app_name"]
 [connectors.params]
 addr = "127.0.0.1"
 port = 1514
@@ -23,20 +23,19 @@ protocol = "udp"
 [[connectors]]
 id = "syslog_tcp_sink"
 type = "syslog"
-allow_override = ["addr", "port", "protocol"]
+allow_override = ["addr", "port", "protocol", "app_name"]
 [connectors.params]
 addr = "127.0.0.1"
 port = 1514
 protocol = "tcp"
 ```
 
-说明：代码侧仅使用 `addr/port/protocol` 三个键；
-
 ## 可用参数（路由 `params`）
 
 - `addr`：Syslog 服务器地址（IP 或主机名）。
 - `port`：端口（1–65535）。
 - `protocol`：`udp` 或 `tcp`（大小写不敏感）。
+- `app_name`：应用名称，默认为当前进程名（如 `wp-engine`）。
 
 ## 配置示例
 

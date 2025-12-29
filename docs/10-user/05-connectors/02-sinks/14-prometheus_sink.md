@@ -1,6 +1,8 @@
 # Prometheus Sink 配置
 
-本文档与代码实现对齐。当前 Prometheus Sink 为“自暴露”型 Exporter，会在本地启动一个 HTTP 服务（默认仅支持 Counter 类计数），对外暴露 `/metrics`。
+> **⚠️ 注意**：Prometheus Sink 当前**暂未实现**。本文档为计划功能的设计文档，实际使用时请以代码实现为准。
+
+本文档与代码实现对齐。当前 Prometheus Sink 为"自暴露"型 Exporter，会在本地启动一个 HTTP 服务（默认仅支持 Counter 类计数），对外暴露 `/metrics`。
 
 ## 连接器定义
 

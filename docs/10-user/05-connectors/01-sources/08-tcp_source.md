@@ -20,13 +20,12 @@
 id = "tcp_src"
 type = "tcp"
 # 允许覆写的键，兼容 syslog 的常见命名
-allow_override = ["addr", "port", "framing", "tcp_recv_bytes", "prefer_newline", "instances"]
+allow_override = ["addr", "port", "framing", "tcp_recv_bytes", "instances"]
 
 [connectors.params]
 addr = "0.0.0.0"
 port = 9000
 framing = "auto"          # auto|line|len
-prefer_newline = false     # 当 framing=auto 时，是否优先按行
 tcp_recv_bytes = 256000   # 256KB
 # instances = 1             # 可选：多实例并行，默认 1，最大 16
 ```
@@ -43,7 +42,6 @@ tags = ["source:tcp", "type:raw"]
 [[sources.params]]
 port = 19000
 framing = "auto"
-prefer_newline = true
 instances = 2
 ```
 
@@ -61,7 +59,7 @@ instances = 2
 - 接收端约束：长度最大 10MB、前缀最多 10 位十进制，异常时丢弃当前尝试，避免内存膨胀
 
 ### auto（自动）
-- 默认优先尝试 `len`；若 `prefer_newline=true` 则优先按行
+- 默认优先尝试 `len`，若解析失败则回退按行
 - 若已检测到"长度前缀进行中"（读到 `<digits><SP>` 但 payload 未到齐），会继续等待，而不会回退按行，避免误切分
 
 ## 与 TCP Sink 联动（回环链路）
@@ -96,7 +94,7 @@ framing = "line"  # 或 "len"
 ## 常见问题（FAQ）
 
 - 问：文本以"数字+空格"开头会不会被误判为长度前缀？
-  - 答：在 `auto` 模式下，确有可能；可通过 `framing="line"` 或 `auto+prefer_newline=true` 避免
+  - 答：在 `auto` 模式下，确有可能；可通过 `framing="line"` 避免
 - 问：为什么推荐生产中用 `len`？
   - 答：边界明确、对二进制/多行更稳健；很多 syslog/TCP 等生产链路推荐/默认使用 octet‑counting
 
@@ -104,7 +102,7 @@ framing = "line"  # 或 "len"
 
 - 仅文本：`framing="line"`
 - 多行/二进制：`framing="len"`（或 `auto` 默认）
-- 快速联调：`auto + prefer_newline=true`，配合 `nc -lk <port>`
+- 快速联调：`framing="line"`，配合 `nc -lk <port>`
 
 ## 相关文档
 

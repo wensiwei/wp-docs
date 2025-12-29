@@ -15,7 +15,7 @@ Syslog 源用于接收和解析标准的 Syslog 协议消息，支持 UDP 和 TC
 [[connectors]]
 id = "syslog_udp_src"
 type = "syslog"
-allow_override = ["addr", "port", "protocol", "tcp_recv_bytes", "header_mode", "prefer_newline"]
+allow_override = ["addr", "port", "protocol", "tcp_recv_bytes", "header_mode", "fast_strip"]
 
 [connectors.params]
 addr = "0.0.0.0"
@@ -32,7 +32,7 @@ tcp_recv_bytes = 256000
 [[connectors]]
 id = "syslog_tcp_src"
 type = "syslog"
-allow_override = ["addr", "port", "protocol", "tcp_recv_bytes", "header_mode", "prefer_newline"]
+allow_override = ["addr", "port", "protocol", "tcp_recv_bytes", "header_mode", "fast_strip"]
 
 [connectors.params]
 addr = "127.0.0.1"
@@ -81,18 +81,18 @@ protocol = "tcp"     # TCP 协议 (可靠传输)
 
 ```toml
 [[sources.params]]
-header_mode = "strip"   # 仅剥离头部，不注入标签 (默认)
-header_mode = "parse"   # 解析+注入标签+剥离头部
+header_mode = "strip"   # 仅剥离头部，不注入标签
+header_mode = "parse"   # 解析+注入标签+剥离头部（默认）
 header_mode = "keep"    # 保留头部，原样透传
 ```
 
-#### prefer_newline
-优先按换行进行分帧（对纯换行流量更高效）
+#### fast_strip
+快速剥离模式（性能优化）
 
 ```toml
 [[sources.params]]
-prefer_newline = true   # 优先换行分帧
-prefer_newline = false  # 默认：先尝试长度前缀，再回退换行
+fast_strip = true   # 启用快速剥离（性能更好）
+fast_strip = false  # 默认值
 ```
 
 ### TCP 专用参数
@@ -137,7 +137,6 @@ tags = ["protocol:tcp", "env:production"]
 addr = "127.0.0.1"
 port = 1514
 protocol = "tcp"
-prefer_newline = true
 ```
 
 ### 双协议配置
@@ -164,7 +163,6 @@ addr = "127.0.0.1"
 port = 1515
 protocol = "tcp"
 header_mode = "parse"
-prefer_newline = true
 tcp_recv_bytes = 1048576
 ```
 
@@ -207,10 +205,10 @@ tcp_recv_bytes = 1048576
 ```toml
 # 高性能场景：
 header_mode = "strip"         # 仅去头，减少解析与标签注入
+fast_strip = true             # 启用快速剥离
 
 # 分析场景：
 header_mode = "parse"         # 解析并注入协议相关元信息
-prefer_newline = false        # 混合/长度前缀较多时保持默认顺序
 ```
 
 ## 相关文档

@@ -27,7 +27,8 @@ encode = "text"
 
 ### 路径配置
 
-#### base + file 组合
+
+#### base + file 组合（推荐）
 ```toml
 [[sources]]
 key = "file_composed"
@@ -38,9 +39,18 @@ base = "/var/log"
 file = "access.log"
 ```
 
+#### instances（多实例并行读取）
+```toml
+[[sources.params]]
+instances = 4   # 1-32，默认为 1
+```
+> 当 `instances > 1` 时，文件会被按行边界分割为多个范围，由多个实例并行读取。
+>
+> **多实例命名规则**：当 `instances > 1` 时，每个实例的 key 会自动添加后缀，如 `file_src-1`、`file_src-2` 等。
+
 ### 编码格式
 
-#### text 编码 (默认)
+#### text 编码（默认）
 ```toml
 [[sources.params]]
 encode = "text"
@@ -119,6 +129,20 @@ file = "encoded.hex"
 encode = "hex"
 ```
 
+### 多实例并行读取（大文件优化）
+```toml
+# wpsrc.toml
+[[sources]]
+enable = true
+key = "large_file"
+connect = "file_src"
+
+[[sources.params]]
+path = "/data/large/access.log"
+instances = 4   # 文件将被分割为 4 个范围并行读取
+```
+> 配置后实际创建的源 key 为：`large_file-1`、`large_file-2`、`large_file-3`、`large_file-4`（或更少，取决于文件行数）。
+
 ## 数据处理特性
 
 ### 1. 逐行读取
@@ -128,6 +152,21 @@ encode = "hex"
 - **text**: 直接读取文本内容
 - **base64**: 读取后进行 Base64 解码
 - **hex**: 读取后进行十六进制解码
+
+### 3. 自动标签
+系统会自动为每条数据添加以下标签：
+- `access_source`: 文件的完整路径
+
+示例：
+```json
+{
+  "data": "原始日志内容",
+  "tags": {
+    "access_source": "/var/log/nginx/access.log",
+    "env": "production"
+  }
+}
+```
 
 ## 相关文档
 

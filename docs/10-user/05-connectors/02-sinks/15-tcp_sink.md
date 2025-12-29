@@ -11,9 +11,15 @@ allow_override = ["addr", "port", "framing"]
 
 [connectors.params]
 addr = "127.0.0.1"
-port = 19000
+port = 9000
 framing = "line"   # line|len
 ```
+
+## 可用参数
+
+- `addr`：目标服务器地址（IP 或主机名）。
+- `port`：目标端口（1–65535），默认 9000。
+- `framing`：分帧模式，`line` 或 `len`，默认 `line`。
 
 ## 使用示例（wpgen 输出到 TCP）
 ```toml
@@ -27,7 +33,7 @@ connect = "tcp_sink"
 
 [output.params]
 addr = "127.0.0.1"
-port = 19000
+port = 9000
 framing = "line"
 ```
 

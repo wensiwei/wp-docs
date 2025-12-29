@@ -38,8 +38,8 @@ param3 = "default_value3"
 
 #### type (必需)
 - 连接器类型，决定使用哪种数据源/输出实现
-- Sources 支持的类型：`file`, `kafka`, `syslog`, `tcp`
-- Sinks 支持的类型：`file`, `syslog`, `tcp`, `kafka`, `prometheus`, `blackhole`
+- Sources 支持的类型：`file`, `syslog`, `tcp`（`kafka` 暂未实现）
+- Sinks 支持的类型：`file`, `syslog`, `tcp`, `blackhole`（`kafka`、`prometheus` 暂未实现）
 
 #### allow_override (可选)
 - 允许源/sink 配置覆盖的参数列表
@@ -88,7 +88,7 @@ file = "gen.dat"
 encode = "text"
 ```
 
-#### Kafka 连接器
+#### Kafka 连接器（暂未实现）
 ```toml
 # connectors/source.d/30-kafka.toml
 [[connectors]]
@@ -101,6 +101,7 @@ brokers = "localhost:9092"
 topic = ["access_log"]
 group_id = "wparse_default_group"
 ```
+> ⚠️ Kafka 连接器当前暂未实现，请勿使用。
 
 #### Syslog 连接器
 ```toml
@@ -124,13 +125,12 @@ tcp_recv_bytes = 256000
 [[connectors]]
 id = "tcp_src"
 type = "tcp"
-allow_override = ["addr", "port", "framing", "tcp_recv_bytes", "prefer_newline", "instances"]
+allow_override = ["addr", "port", "framing", "tcp_recv_bytes", "instances"]
 
 [connectors.params]
 addr = "0.0.0.0"
 port = 9000
 framing = "auto"
-prefer_newline = false
 tcp_recv_bytes = 256000
 ```
 
@@ -156,7 +156,7 @@ file = "default.json"
 [[connectors]]
 id = "syslog_tcp_sink"
 type = "syslog"
-allow_override = ["addr", "port", "protocol"]
+allow_override = ["addr", "port", "protocol", "app_name"]
 
 [connectors.params]
 addr = "127.0.0.1"
@@ -170,7 +170,7 @@ protocol = "tcp"
 [[connectors]]
 id = "tcp_sink"
 type = "tcp"
-allow_override = ["addr", "port", "framing", "max_backoff"]
+allow_override = ["addr", "port", "framing"]
 
 [connectors.params]
 addr = "127.0.0.1"
@@ -201,20 +201,19 @@ allow_override = ["*"]  # 不支持且不安全
 [[connectors]]
 id = "syslog_secure"
 type = "syslog"
-allow_override = ["addr", "port"]
+allow_override = ["addr", "port", "protocol"]
 
 [connectors.params]
 addr = "127.0.0.1"    # 安全的默认地址
 port = 1514           # 非特权端口
 protocol = "tcp"      # 可靠的协议
-header_mode = "strip" # 剥离协议头
 ```
 
 ## 相关文档
 
 - [源配置基础](./01-sources/01-sources_basics.md)
 - [文件源配置](./01-sources/02-file_source.md)
-- [Kafka 源配置](./01-sources/03-kafka_source.md)
+- [Kafka 源配置](./01-sources/03-kafka_source.md) ⚠️ 暂未实现
 - [Syslog 源配置](./01-sources/04-syslog_source.md)
 - [TCP 源配置](./01-sources/08-tcp_source.md)
 - [Sink 配置基础](./02-sinks/00-sinks_basics.md)
