@@ -57,7 +57,7 @@ build-en:
 copy-assets:
 	@echo "Copying language selection page..."
 	@mkdir -p book
-	@cp book/index.html book/ 2>/dev/null || true
+	@cp index.html book/
 
 # Serve documentation locally (Chinese, default port 3000)
 serve: serve-zh
