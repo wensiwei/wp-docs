@@ -1,42 +1,138 @@
 # WPL 管道函数
 
-本页描述 WPL 中可在字段级管道中使用的内置函数。这些函数用于对解析后的字段进行条件判断、过滤与转换。
+本页描述 WPL 中可在字段级管道中使用的内置函数。这些函数用于对解析后的字段进行选择、条件判断、过滤与转换。
 
 ## 函数分类
 
-WPL 管道函数分为两类：
+WPL 管道函数分为四类：
 
 | 类型 | 前缀 | 说明 |
 |------|------|------|
+| **选择器函数** | 无前缀 | 选择特定字段作为活跃字段 |
 | **字段集合操作** | `f_` | 在字段集合中查找指定字段进行操作 |
-| **直接函数** | 无前缀 | 直接对当前数据进行处理 |
+| **活跃字段操作** | 无前缀 | 直接对当前活跃字段进行检查 |
+| **转换函数** | 无前缀 | 对字段数据进行转换处理 |
+
+> **活跃字段说明**：管道中的操作默认作用于"活跃字段"。可以使用选择器函数切换活跃字段，或在 `f_` 前缀函数中用 `_` 表示当前活跃字段。
+
+---
 
 ## 函数概览
+
+### 选择器函数
+
+| 函数名 | 参数 | 说明 |
+|--------|------|------|
+| `take` | 1 | 选择指定字段作为活跃字段 |
+| `last` | 0 | 选择最后一个字段作为活跃字段 |
 
 ### 字段集合操作函数（`f_` 前缀）
 
 | 函数名 | 参数 | 说明 |
 |--------|------|------|
-| `f_has` | 1 | 检查字段是否存在 |
-| `f_chars_has` | 2 | 检查字段是否包含指定字符串 |
-| `f_chars_not_has` | 2 | 检查字段是否不包含指定字符串 |
-| `f_chars_in` | 2 | 检查字段值是否在字符串列表中 |
-| `f_digit_has` | 2 | 检查字段是否包含指定数字 |
-| `f_digit_in` | 2 | 检查字段值是否在数字列表中 |
-| `f_ip_in` | 2 | 检查 IP 地址是否在列表中 |
+| `f_has` | 1 | 检查指定字段是否存在 |
+| `f_chars_has` | 2 | 检查指定字段值是否等于指定字符串 |
+| `f_chars_not_has` | 2 | 检查指定字段值是否不等于指定字符串 |
+| `f_chars_in` | 2 | 检查指定字段值是否在字符串列表中 |
+| `f_digit_has` | 2 | 检查指定字段数值是否等于指定数字 |
+| `f_digit_in` | 2 | 检查指定字段数值是否在数字列表中 |
+| `f_ip_in` | 2 | 检查指定 IP 字段是否在 IP 列表中 |
 
-### 直接函数（无前缀）
+### 活跃字段操作函数（无前缀）
 
 | 函数名 | 参数 | 说明 |
 |--------|------|------|
-| `json_unescape` | 0 | 对chars类型字段进行反转义 |
-| `base64_decode` | 0 | 对chars类型字段进行base64解码 |
+| `has` | 0 | 检查活跃字段是否存在 |
+| `chars_has` | 1 | 检查活跃字段值是否等于指定字符串 |
+| `chars_not_has` | 1 | 检查活跃字段值是否不等于指定字符串 |
+| `chars_in` | 1 | 检查活跃字段值是否在字符串列表中 |
+| `digit_has` | 1 | 检查活跃字段数值是否等于指定数字 |
+| `digit_in` | 1 | 检查活跃字段数值是否在数字列表中 |
+| `ip_in` | 1 | 检查活跃 IP 字段是否在 IP 列表中 |
+
+### 转换函数
+
+| 函数名 | 参数 | 说明 |
+|--------|------|------|
+| `json_unescape` | 0 | 对 chars 类型字段进行 JSON 反转义 |
+| `base64_decode` | 0 | 对 chars 类型字段进行 Base64 解码 |
 
 ---
 
-## 字段集合操作函数详解
+## 选择器函数详解
 
-### 1. `f_has`
+### `take`
+
+选择指定名称的字段作为活跃字段，后续的无前缀操作将作用于该字段。
+
+**语法：**
+```
+take(<field_name>)
+```
+
+**参数：**
+- `field_name`：要选择的字段名
+
+**示例：**
+```wpl
+rule select_field {
+  (
+    json(chars@name, digit@age)
+    |take(name)
+    |chars_has(admin)
+  )
+}
+```
+
+---
+
+### `last`
+
+选择字段集合中的最后一个字段作为活跃字段。
+
+**语法：**
+```
+last()
+```
+
+**示例：**
+```wpl
+rule use_last {
+  (
+    json(chars@a, chars@b, chars@c)
+    |last()
+    |chars_has(value)
+  )
+}
+```
+
+---
+
+## 字段存在检查函数详解
+
+### `has`
+
+检查当前活跃字段是否存在。
+
+**语法：**
+```
+has()
+```
+
+**示例：**
+```wpl
+rule check_active {
+  (
+    json(chars@name)
+    |take(name)
+    |has()
+  )
+}
+```
+
+---
+
+### `f_has`
 
 检查指定字段是否存在于字段集合中。
 
@@ -59,42 +155,103 @@ rule check_field {
 
 ---
 
-### 2. `f_chars_has`
+## 字符串操作函数详解
 
-检查字段集合中指定字段是否包含指定的字符串。
+### `chars_has`
+
+检查当前活跃字段的值是否等于指定字符串。
 
 **语法：**
 ```
-f_chars_has(<field_name>, <pattern>)
+chars_has(<value>)
 ```
 
 **参数：**
-- `field_name`：要检查的字段名
-- `pattern`：要匹配的字符串模式
+- `value`：要匹配的字符串值
 
 **示例：**
 ```wpl
-rule check_error {
+rule check_value {
   (
-    json |f_chars_has(message, error)
+    json(chars@status)
+    |take(status)
+    |chars_has(success)
   )
 }
 ```
 
 ---
 
-### 3. `f_chars_not_has`
+### `f_chars_has`
 
-检查字段集合中指定字段是否不包含指定的字符串（`f_chars_has` 的否定形式）。
+检查字段集合中指定字段的值是否等于指定字符串。
 
 **语法：**
 ```
-f_chars_not_has(<field_name>, <pattern>)
+f_chars_has(<field_name>, <value>)
+```
+
+**参数：**
+- `field_name`：要检查的字段名（使用 `_` 表示当前活跃字段）
+- `value`：要匹配的字符串值
+
+**示例：**
+```wpl
+rule check_message {
+  (
+    json |f_chars_has(message, error)
+  )
+}
+
+# 使用 _ 表示活跃字段
+rule check_active_field {
+  (
+    json(chars@name)
+    |take(name)
+    |f_chars_has(_, admin)
+  )
+}
+```
+
+---
+
+### `chars_not_has`
+
+检查当前活跃字段的值是否不等于指定字符串。
+
+**语法：**
+```
+chars_not_has(<value>)
+```
+
+**参数：**
+- `value`：不应匹配的字符串值
+
+**示例：**
+```wpl
+rule exclude_value {
+  (
+    json(chars@status)
+    |take(status)
+    |chars_not_has(failed)
+  )
+}
+```
+
+---
+
+### `f_chars_not_has`
+
+检查字段集合中指定字段的值是否不等于指定字符串。
+
+**语法：**
+```
+f_chars_not_has(<field_name>, <value>)
 ```
 
 **参数：**
 - `field_name`：要检查的字段名
-- `pattern`：不应存在的字符串模式
+- `value`：不应存在的字符串值
 
 **示例：**
 ```wpl
@@ -107,9 +264,34 @@ rule filter_success {
 
 ---
 
-### 4. `f_chars_in`
+### `chars_in`
 
-检查字段集合中指定字段值是否在给定的字符串列表中。
+检查当前活跃字段的值是否在给定的字符串列表中。
+
+**语法：**
+```
+chars_in([<value1>, <value2>, ...])
+```
+
+**参数：**
+- `[...]`：允许的字符串值列表
+
+**示例：**
+```wpl
+rule check_method {
+  (
+    json(chars@method)
+    |take(method)
+    |chars_in([GET, POST, PUT])
+  )
+}
+```
+
+---
+
+### `f_chars_in`
+
+检查字段集合中指定字段的值是否在给定的字符串列表中。
 
 **语法：**
 ```
@@ -131,9 +313,36 @@ rule check_method {
 
 ---
 
-### 5. `f_digit_has`
+## 数字操作函数详解
 
-检查字段集合中指定字段是否包含指定的数字值。
+### `digit_has`
+
+检查当前活跃字段的数值是否等于指定数字。
+
+**语法：**
+```
+digit_has(<number>)
+```
+
+**参数：**
+- `number`：要匹配的数字
+
+**示例：**
+```wpl
+rule check_code {
+  (
+    json(digit@code)
+    |take(code)
+    |digit_has(200)
+  )
+}
+```
+
+---
+
+### `f_digit_has`
+
+检查字段集合中指定字段的数值是否等于指定数字。
 
 **语法：**
 ```
@@ -155,9 +364,34 @@ rule check_status {
 
 ---
 
-### 6. `f_digit_in`
+### `digit_in`
 
-检查字段集合中指定数字字段值是否在给定的数字列表中。
+检查当前活跃字段的数值是否在给定的数字列表中。
+
+**语法：**
+```
+digit_in([<num1>, <num2>, ...])
+```
+
+**参数：**
+- `[...]`：允许的数字值列表
+
+**示例：**
+```wpl
+rule check_success {
+  (
+    json(digit@status)
+    |take(status)
+    |digit_in([200, 201, 204])
+  )
+}
+```
+
+---
+
+### `f_digit_in`
+
+检查字段集合中指定字段的数值是否在给定的数字列表中。
 
 **语法：**
 ```
@@ -179,7 +413,43 @@ rule check_success_codes {
 
 ---
 
-### 7. `f_ip_in`
+## IP 地址操作函数详解
+
+### `ip_in`
+
+检查当前活跃字段的 IP 地址是否在给定的 IP 列表中。支持 IPv4 和 IPv6。
+
+**语法：**
+```
+ip_in([<ip1>, <ip2>, ...])
+```
+
+**参数：**
+- `[...]`：允许的 IP 地址列表
+
+**示例：**
+```wpl
+rule check_client {
+  (
+    json(ip@client_ip)
+    |take(client_ip)
+    |ip_in([127.0.0.1, 192.168.1.1])
+  )
+}
+
+# 支持 IPv6
+rule check_ipv6 {
+  (
+    json(ip@src)
+    |take(src)
+    |ip_in([::1, 2001:db8::1])
+  )
+}
+```
+
+---
+
+### `f_ip_in`
 
 检查字段集合中指定 IP 地址是否在给定的 IP 列表中。支持 IPv4 和 IPv6。
 
@@ -209,32 +479,59 @@ rule check_ipv6 {
 
 ---
 
-## 直接函数详解
+## 转换函数详解
 
 ### `json_unescape`
 
-对所有字段进行反转义处理。
+对当前活跃字段进行 JSON 反转义处理。将 JSON 转义序列转换为实际字符。
 
 **语法：**
 ```
 json_unescape()
 ```
 
-
-**转换效果（json）：**
-```
-"hello\\nworld"  →  "hello\nworld"
-"path\\\\to"     →  "path\to"
-"say\\\"hi\\\""  →  "say\"hi\""
-```
+**转换效果：**
+| 输入 | 输出 |
+|------|------|
+| `hello\\nworld` | `hello` + 换行 + `world` |
+| `path\\\\to` | `path\to` |
+| `say\\\"hi\\\"` | `say"hi"` |
 
 **示例：**
 ```wpl
 rule parse_json_log {
   (
-    json(
-      chars@message
-    ) |json_unescape()
+    json(chars@message)
+    |take(message)
+    |json_unescape()
+  )
+}
+```
+
+---
+
+### `base64_decode`
+
+对当前活跃字段进行 Base64 解码。将 Base64 编码的字符串解码为原始文本。
+
+**语法：**
+```
+base64_decode()
+```
+
+**转换效果：**
+| 输入 | 输出 |
+|------|------|
+| `aGVsbG8=` | `hello` |
+| `Zm9vYmFy` | `foobar` |
+
+**示例：**
+```wpl
+rule decode_payload {
+  (
+    json(chars@payload)
+    |take(payload)
+    |base64_decode()
   )
 }
 ```
@@ -260,6 +557,24 @@ rule complex_filter {
   |f_ip_in(client_ip, [10.0.0.1, 10.0.0.2])
 }
 ```
+
+使用选择器和无前缀函数的组合：
+
+```wpl
+rule mixed_style {
+  (
+    json(chars@name, digit@age, chars@status)
+    |take(name)
+    |chars_has(admin)
+    |take(age)
+    |digit_in([18, 19, 20])
+    |take(status)
+    |chars_not_has(disabled)
+  )
+}
+```
+
+---
 
 ## 相关文档
 
