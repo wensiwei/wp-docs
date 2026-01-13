@@ -3,7 +3,8 @@
     "allow": [
       "Bash(ls:*)",
       "Bash(mdbook build:*)",
-      "Bash(make:*)"
+      "Bash(make:*)",
+      "Bash(find:*)"
     ]
   }
 }
