@@ -1,6 +1,7 @@
 # Summary
 
 - [User Guide](10-user/README.md)
+  - [Core Concepts Quick Reference](10-user/01-cli/00-concepts-guide.md)
   - [CLI Tools](10-user/01-cli/README.md)
     - [Getting Started](10-user/01-cli/01-getting_started.md)
     - [Wproj](10-user/01-cli/02-wproj.md)

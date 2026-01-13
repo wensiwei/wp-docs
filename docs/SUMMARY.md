@@ -1,6 +1,7 @@
 # Summary
 
 - [使用指南](10-user/README.md)
+  - [核心概念速查](10-user/01-cli/00-concepts-guide.md)
   - [CLI 工具集](10-user/01-cli/README.md)
     - [GettingStarted](10-user/01-cli/01-getting_started.md)
     - [Wproj](10-user/01-cli/02-wproj.md)
@@ -19,6 +20,8 @@
     - [WPL 解析示例](10-user/03-wpl/02-wpl_example.md)
     - [WPL 管道函数](10-user/03-wpl/03-wpl_pipe_functions.md)
     - [WPL 语法](10-user/03-wpl/04-wpl_grammar.md)
+  - [WPL 学习目标与练习](10-user/07-wpl-learning-objectives.md)
+  - [实战教程 (T1-T4)](10-user/08-hands-on-tutorials.md)
   - [OML 对象模型语言](10-user/04-oml/README.md)
     - [OML 语言基础](10-user/04-oml/01-oml_basics.md)
     - [OML 实用示例集](10-user/04-oml/02-oml_examples.md)
