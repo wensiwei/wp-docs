@@ -578,5 +578,5 @@ rule mixed_style {
 
 ## 相关文档
 
-- 语法定义：[WPL 语法（EBNF）](./03-wpl_grammar.md)
+- 语法定义：[WPL 语法（EBNF）](./04-wpl_grammar.md)
 - 实现代码：`crates/wp-lang/src/parser/wpl_fun.rs`

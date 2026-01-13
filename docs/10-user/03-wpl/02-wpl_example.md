@@ -282,7 +282,7 @@ age: 18
 **解析规则**:
 ```wpl
 rule test {
-    (json(chars@path, chars@txt) | str_mode(decoded))
+    (json(chars@path, chars@txt) |json_unescape())
 }
 ```
 
@@ -302,7 +302,7 @@ txt: "line1\nline2"  # 包含实际换行符
 **解析规则**:
 ```wpl
 rule test {
-    (json | exists(age))
+    (json |f_has(age))
 }
 ```
 
@@ -319,7 +319,7 @@ age: 18
 **失败示例**:
 ```wpl
 rule test {
-    (json | exists(age1))  # 字段不存在
+    (json |f_has(age1))  # 字段不存在
 }
 ```
 
@@ -328,7 +328,7 @@ rule test {
 **解析规则**:
 ```wpl
 rule test {
-    (json | exists_digit(age, 18))
+    (json |f_digit_has(age, 18))
 }
 ```
 
@@ -348,7 +348,7 @@ age: 18
 **解析规则**:
 ```wpl
 rule test {
-    (json | exists_digit_in(age, [18, 19]))
+    (json |f_digit_in(age, [18, 19]))
 }
 ```
 
@@ -514,7 +514,7 @@ txt: "line1\nline2"       # 换行符被保留
 **解析规则**:
 ```wpl
 rule test {
-    (json(chars@path, chars@txt) | str_mode(decoded))
+    (json(chars@path, chars@txt) |json_unescape())
 }
 ```
 
@@ -536,7 +536,7 @@ txt: "line1\nline2"  # 包含实际换行符
 **解析规则**:
 ```wpl
 rule test {
-    (json | exists(name))
+    (json |f_has(name))
 }
 ```
 
@@ -554,7 +554,7 @@ age: 25
 **失败示例**:
 ```wpl
 rule test {
-    (json | exists(email))  # email 字段不存在
+    (json |f_has(email))  # email 字段不存在
 }
 ```
 
@@ -563,7 +563,7 @@ rule test {
 **解析规则**:
 ```wpl
 rule test {
-    (json | chars_exists(status, "success"))
+    (json |f_chars_has(status, success))
 }
 ```
 
@@ -583,7 +583,7 @@ message: "Operation completed"
 **解析规则**:
 ```wpl
 rule test {
-    (json | chars_not_exists(level, "error"))
+    (json |f_chars_not_has(level, error))
 }
 ```
 
@@ -603,7 +603,7 @@ msg: "Normal operation"
 **解析规则**:
 ```wpl
 rule test {
-    (json | chars_in(priority, ["high", "medium"]))
+    (json |f_chars_in(priority, [high, medium]))
 }
 ```
 
@@ -625,7 +625,7 @@ task: "Backup"
 **解析规则**:
 ```wpl
 rule test {
-    (json | digit_exists(age, 25))
+    (json |f_digit_has(age, 25))
 }
 ```
 
@@ -645,7 +645,7 @@ age: 25
 **解析规则**:
 ```wpl
 rule test {
-    (json | digit_in(score, [80, 85, 90, 95, 100]))
+    (json |f_digit_in(score, [80, 85, 90, 95, 100]))
 }
 ```
 
@@ -665,7 +665,7 @@ score: 90
 **解析规则**:
 ```wpl
 rule test {
-    (json | ip_in(client_ip, ["192.168.1.0/24", "10.0.0.0/8"]))
+    (json |f_ip_in(client_ip, [192.168.1.100, 10.0.0.1]))
 }
 ```
 
@@ -685,7 +685,7 @@ action: "login"
 **解析规则**:
 ```wpl
 rule test {
-    (|decode/base64| (json | exists_digit(age, 25)) | str_mode(decoded))
+    (|decode/base64| (json |f_digit_has(age, 25)) |json_unescape())
 }
 ```
 
@@ -716,7 +716,7 @@ age: 25
 **解析规则**:
 ```wpl
 rule test {
-    (|decode/base64| (digit:id, chars:name) | (exists(id) & chars_exists(name, "admin")))
+    (|decode/base64| (digit:id, chars:name) |f_has(id) |f_chars_has(name, admin))
 }
 ```
 
@@ -750,10 +750,10 @@ rule huawei_firewall {
 **解析规则**:
 ```wpl
 rule api_response {
-    (json |
-        exists(status_code) &
-        digit_in(status_code, [200, 201, 202]) &
-        chars_in(result_type, ["success", "partial"])
+    (json
+        |f_has(status_code)
+        |f_digit_in(status_code, [200, 201, 202])
+        |f_chars_in(result_type, [success, partial])
     )
 }
 ```
@@ -826,7 +826,7 @@ rule geo_enhance {
 **多步骤处理**:
 ```wpl
 rule complex_parse {
-    (|decode/base64| (json | exists_digit(age, 18)) | str_mode(decoded))
+    (|decode/base64| (json |f_digit_has(age, 18)) |json_unescape())
 }
 ```
 
@@ -846,11 +846,14 @@ package package_name {
 |操作符|  # 应用管道操作
 ```
 常用操作：
-- `|decode/base64|` - Base64解码
-- `|str_mode(decoded)|` - 字符串解码模式
-- `|exists(field)|` - 检查字段存在
-- `|exists_digit(field, value)|` - 检查数字字段值
-- `|unquote/unescape|` - 取消引用/反转义
+- `|decode/base64|` - Base64 解码（预处理管道）
+- `|decode/hex|` - Hex 解码（预处理管道）
+- `|unquote/unescape|` - 取消引用/反转义（预处理管道）
+- `|f_has(field)|` - 检查字段存在
+- `|f_digit_has(field, value)|` - 检查数字字段值
+- `|f_chars_has(field, value)|` - 检查字符串字段值
+- `|json_unescape()|` - JSON 反转义
+- `|base64_decode()|` - Base64 解码
 
 ### 3. 字段命名
 ```wpl

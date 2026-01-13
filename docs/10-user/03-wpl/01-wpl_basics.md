@@ -24,6 +24,9 @@ package net {
 
 ## 基本结构
 
+
+![](../../images/wpl-struct.png)
+
 - package：包名作为作用域；一个包内包含多条 rule
 - rule：规则名可包含路径分隔符（`/a/b`）,
 - 表达式（Express）：可含“预处理管道”与一个或多个“分组”
