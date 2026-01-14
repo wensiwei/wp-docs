@@ -282,7 +282,7 @@ age: 18
 **Parsing Rule**:
 ```wpl
 rule test {
-    (json(chars@path, chars@txt) | str_mode(decoded))
+    (json(chars@path, chars@txt) |json_unescape())
 }
 ```
 
@@ -302,7 +302,7 @@ txt: "line1\nline2"  # Contains actual newline character
 **Parsing Rule**:
 ```wpl
 rule test {
-    (json | exists(age))
+    (json |f_has(age))
 }
 ```
 
@@ -319,7 +319,7 @@ age: 18
 **Failure Example**:
 ```wpl
 rule test {
-    (json | exists(age1))  # Field does not exist
+    (json |f_has(age1))  # Field does not exist
 }
 ```
 
@@ -328,7 +328,7 @@ rule test {
 **Parsing Rule**:
 ```wpl
 rule test {
-    (json | exists_digit(age, 18))
+    (json |f_digit_has(age, 18))
 }
 ```
 
@@ -348,7 +348,7 @@ age: 18
 **Parsing Rule**:
 ```wpl
 rule test {
-    (json | exists_digit_in(age, [18, 19]))
+    (json |f_digit_in(age, [18, 19]))
 }
 ```
 
@@ -514,7 +514,7 @@ txt: "line1\nline2"       # Newline preserved
 **Parsing Rule**:
 ```wpl
 rule test {
-    (json(chars@path, chars@txt) | str_mode(decoded))
+    (json(chars@path, chars@txt) |json_unescape())
 }
 ```
 
@@ -536,7 +536,7 @@ txt: "line1\nline2"  # Contains actual newline character
 **Parsing Rule**:
 ```wpl
 rule test {
-    (json | exists(name))
+    (json |f_has(name))
 }
 ```
 
@@ -554,7 +554,7 @@ age: 25
 **Failure Example**:
 ```wpl
 rule test {
-    (json | exists(email))  # email field does not exist
+    (json |f_has(email))  # email field does not exist
 }
 ```
 
@@ -563,7 +563,7 @@ rule test {
 **Parsing Rule**:
 ```wpl
 rule test {
-    (json | chars_exists(status, "success"))
+    (json |f_chars_has(status, success))
 }
 ```
 
@@ -583,7 +583,7 @@ message: "Operation completed"
 **Parsing Rule**:
 ```wpl
 rule test {
-    (json | chars_not_exists(level, "error"))
+    (json |f_chars_not_has(level, error))
 }
 ```
 
@@ -603,7 +603,7 @@ msg: "Normal operation"
 **Parsing Rule**:
 ```wpl
 rule test {
-    (json | chars_in(priority, ["high", "medium"]))
+    (json |f_chars_in(priority, [high, medium]))
 }
 ```
 
