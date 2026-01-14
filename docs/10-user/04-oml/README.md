@@ -10,6 +10,7 @@ OML（Object Modeling Language）用于在 Warp Parse 中对解析后的记录�
 - [OML 使用示例](./02-oml_examples.md)
 - [OML 函数参考](./03-oml_functions.md)
 - [OML 语法（EBNF）](./04-oml_grammar.md)
+- [OML 在Sink的使用](./05-oml_in_sinks.md) 
 
 ## 特性概览
 
