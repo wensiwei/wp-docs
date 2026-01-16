@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### 2025-01-16
+
+#### Documentation Updates
+
+**Wpgen Configuration Sync (Chinese -> English)**
+- Synced `06-wpgen.md` - Wpgen configuration with comprehensive speed profile documentation
+  - Added Dynamic Speed Profiles section with 7 speed models:
+    - `constant` - Fixed rate generation
+    - `sinusoidal` - Periodic sine wave fluctuation
+    - `stepped` - Predefined step sequences for phased load testing
+    - `burst` - Random high-speed burst triggers
+    - `ramp` - Linear rate progression for stress testing
+    - `random_walk` - Random fluctuation around base value
+    - `composite` - Combine multiple profiles (average/max/min/sum)
+  - Added 3 complete configuration examples
+  - Updated runtime rules documentation
+
 ### 2025-01-14
 
 #### Documentation Updates
