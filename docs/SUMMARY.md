@@ -45,6 +45,9 @@
       - [Prometheus Sink](10-user/05-connectors/02-sinks/14-prometheus_sink.md)
       - [TCP Sink](10-user/05-connectors/02-sinks/15-tcp_sink.md)
       - [VictoriaLogs](10-user/05-connectors/02-sinks/16-victorialogs.md)
+      - [Doris Sink](10-user/05-connectors/02-sinks/17-doris.md)
+      - [Kafka Sink](10-user/05-connectors/02-sinks/18-kafka_sink.md)
+      - [MySQL Sink](10-user/05-connectors/02-sinks/19-mysql_sink.md)
   - [排障指南（Troubleshooting）](10-user/09-FQA/troubleshooting.md)
 
 - [BenchMark Report](20-report/benchmark.md)
